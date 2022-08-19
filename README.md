@@ -16,7 +16,7 @@ Encoded JSON string similar to what is outlined here https://api.slack.com/refer
 
 Secrets
 
-These secrets must be exist in the calling repo
+These secrets must exist in the calling repo
 
 GOOGLE_CREDENTIALS_FOR_SLACK_TOKEN ❗
 Credentials in JSON format
