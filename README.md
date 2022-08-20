@@ -1,7 +1,5 @@
 Post to Slack using Google Secret
 
-Create a label in your repo to assign to stuck pull requests. The default label this action uses is stuck, but you can use any label.
-
 Inputs
 ❗ = Required
 
@@ -11,18 +9,17 @@ Id of the recipient channel or user e.g. "@test_user", "#test_channel"
 TEXT ❗
 Text you want to send to the channel
 
-BLOCKS
-Encoded JSON string similar to what is outlined here https://api.slack.com/reference/block-kit/blocks
+WORKLOAD_IDENTITY_PROVIDER ❗
 
-Secrets
-
-These secrets must exist in the calling repo
-
-GOOGLE_CREDENTIALS_FOR_SLACK_TOKEN ❗
-Credentials in JSON format
+SERVICE_ACCOUNT ❗
+Google service account, which must have secret manager viewer access to the secret for the slack bot
 
 GOOGLE_SECRET_KEY_FOR_SLACK_TOKEN ❗
 Secret Key Id in the format of [gcp_project_id]/[secret_name]
+
+BLOCKS
+Encoded JSON string similar to what is outlined here https://api.slack.com/reference/block-kit/blocks
+
 
 Usage
 ```
