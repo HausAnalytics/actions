@@ -30,9 +30,6 @@ on:
       deploybot_token_secret_name:
         required: true
         type: string
-      pr_repo_path:
-        required: true
-        type: string
       
 
 jobs:
@@ -57,7 +54,7 @@ jobs:
     - uses: octokit/request-action@v2.x
       id: get_pr_info
       with:
-        route: "GET ${{ inputs.pr_repo_path }}/${{ inputs.sha }}/pulls"
+        route: "GET $GITHUB_ACTION_REPOSITORY/${{ inputs.sha }}/pulls"
       env:
         GITHUB_TOKEN: '${{ steps.secrets.outputs.github_token }}'
     - name: "Set PR data as output variables"
