@@ -1,0 +1,76 @@
+name: post_to_slack
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      channel-id:
+        required: true
+        type: string
+      deploy-job-status:
+        required: true
+        type: string
+      environment-name:
+        required: true
+        type: string
+      sha:
+        required: true
+        type: string
+      workload_identity_provider:
+        required: true
+        type: string
+      service_account:
+        required: true
+        type: string
+      github_token_secret_name:
+        required: true
+        type: string
+      deployboy_token_secret_name:
+        required: true
+        type: string
+      pr_repo_path:
+        required: true
+        type: string
+      
+
+jobs:
+  post_to_slack:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+    # Post deploy to slack
+    - name: Auth with GCP
+      uses: 'google-github-actions/auth@v0.8.0'
+      with:
+        create_credentials_file: true
+        workload_identity_provider: ${{ inputs.workload_identity_provider }}
+        service_account: ${{ inputs.service_account }}
+    - name: Fetch secrets
+      id: secrets
+      uses: 'google-github-actions/get-secretmanager-secrets@v0'
+      with:
+        # using gcp API projects' secret
+        secrets: |-
+          github_token: ${{ inputs.github_token_secret_name }}
+          deploybot_token: ${{ inputs.deployboy_token_secret_name }}
+    - uses: octokit/request-action@v2.x
+      id: get_pr_info
+      with:
+        route: "GET ${{ inputs.pr_repo_path }}/${{ inputs.sha }}/pulls"
+      env:
+        GITHUB_TOKEN: '${{ steps.secrets.outputs.github_token }}'
+    - name: "Set PR data as output variables"
+      id: pr_data
+      run: |
+        echo ::set-output name=pr_title::${{fromJson(steps.get_pr_info.outputs.data)[0].title}}
+        echo ::set-output name=pr_url::${{fromJson(steps.get_pr_info.outputs.data)[0].html_url}}
+        echo ::set-output name=author::${{fromJson(steps.get_pr_info.outputs.data)[0].user.login}}
+    - name: Post to slack channel
+      uses: slackapi/slack-github-action@v1.21.0
+      with:
+        channel-id: "${{ inputs.channel-id }}"
+        slack-message: "${{ inputs.deploy-job-status == 'success' && ':rocket:' || ':sad-cowboy:' }} ${{inputs.environment-name}} ${{ github.event.repository.name }} deploy *${{ inputs.deploy-job-status }}* for ${{ steps.pr_data.outputs.author }}'s changes: `${{ steps.pr_data.outputs.pr_title }}` at sha ${{ inputs.sha }}\n${{steps.pr_data.outputs.pr_url}}"
+      env:
+        SLACK_BOT_TOKEN: "${{ steps.secrets.outputs.deploybot_token }}"
