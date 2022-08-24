@@ -27,7 +27,7 @@ on:
       github_token_secret_name:
         required: true
         type: string
-      deployboy_token_secret_name:
+      deploybot_token_secret_name:
         required: true
         type: string
       pr_repo_path:
@@ -44,7 +44,6 @@ jobs:
     - name: Auth with GCP
       uses: 'google-github-actions/auth@v0.8.0'
       with:
-        create_credentials_file: true
         workload_identity_provider: ${{ inputs.workload_identity_provider }}
         service_account: ${{ inputs.service_account }}
     - name: Fetch secrets
@@ -54,7 +53,7 @@ jobs:
         # using gcp API projects' secret
         secrets: |-
           github_token: ${{ inputs.github_token_secret_name }}
-          deploybot_token: ${{ inputs.deployboy_token_secret_name }}
+          deploybot_token: ${{ inputs.deploybot_token_secret_name }}
     - uses: octokit/request-action@v2.x
       id: get_pr_info
       with:
