@@ -15,9 +15,6 @@ on:
       environment-name:
         required: true
         type: string
-      sha:
-        required: true
-        type: string
       workload_identity_provider:
         required: true
         type: string
@@ -30,6 +27,11 @@ on:
       deploybot_token_secret_name:
         required: true
         type: string
+      sha:
+        required: false
+        type: string
+        default: "${{ github.sha }}"
+      
       
 
 jobs:
