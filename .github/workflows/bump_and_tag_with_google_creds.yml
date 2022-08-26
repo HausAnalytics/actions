@@ -1,4 +1,4 @@
-name: post_to_slack
+name: Bump and tag with Google Credentials
 permissions:
   id-token: write
   contents: read
@@ -15,8 +15,10 @@ on:
       github_token_secret_name:
         required: true
         type: string      
-      
-bump-and-tag:
+jobs:
+  bump-and-tag:
+    timeout-minutes: 3
+    runs-on: ubuntu-latest
     steps:
     - name: Auth with GCP
       uses: 'google-github-actions/auth@v0.8.0'
