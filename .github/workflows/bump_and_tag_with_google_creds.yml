@@ -1,0 +1,50 @@
+name: Bump and tag with Google Credentials
+permissions:
+  contents: read
+
+on:
+  workflow_call:
+    inputs:
+      workload_identity_provider:
+        required: true
+        type: string
+      service_account:
+        required: true
+        type: string
+      github_token_secret_name:
+        required: true
+        type: string      
+jobs:
+  bump-and-tag:
+    timeout-minutes: 3
+    runs-on: ubuntu-latest
+    steps:
+    - name: Auth with GCP
+      uses: google-github-actions/auth@v0.8.0
+      with:
+        create_credentials_file: false
+        workload_identity_provider: ${{ inputs.workload_identity_provider }}
+        service_account: ${{ inputs.service_account }}
+    - name: Fetch secrets
+      id: secrets
+      uses: google-github-actions/get-secretmanager-secrets@v0
+      with:
+        # using gcp API project's secret
+        secrets: |-
+          github_token:${{ inputs.github_token_secret_name }}
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        token: ${{ steps.secrets.outputs.github_token }}
+    - name: Bump version and push tag
+      id: bump_version
+      uses: jasonamyers/github-bumpversion-action@v1.0.5
+      env:
+        GITHUB_TOKEN: ${{ steps.secrets.outputs.github_token }}
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ steps.secrets.outputs.github_token }}
+        force: true
+        branch: ${{ github.ref }}
+        tags: true
