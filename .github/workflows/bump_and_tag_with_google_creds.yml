@@ -1,6 +1,5 @@
 name: Bump and tag with Google Credentials
 permissions:
-  id-token: write
   contents: read
 
 on:
