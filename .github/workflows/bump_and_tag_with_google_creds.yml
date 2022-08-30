@@ -1,5 +1,6 @@
 name: Bump and tag with Google Credentials
 permissions:
+  id-token: write
   contents: read
 
 on:
@@ -22,7 +23,7 @@ jobs:
     - name: Auth with GCP
       uses: google-github-actions/auth@v0.8.0
       with:
-        create_credentials_file: false
+        create_credentials_file: true
         workload_identity_provider: ${{ inputs.workload_identity_provider }}
         service_account: ${{ inputs.service_account }}
     - name: Fetch secrets
