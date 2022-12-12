@@ -19,6 +19,9 @@ jobs:
   bump-and-tag:
     timeout-minutes: 3
     runs-on: ubuntu-latest
+    outputs:
+      new_ver: ${{ steps.bump_version.outputs.new_ver }}
+      old_ver: ${{ steps.bump_version.outputs.old_ver }}
     steps:
     - name: Auth with GCP
       uses: google-github-actions/auth@v0.8.0
@@ -49,3 +52,18 @@ jobs:
         force: true
         branch: ${{ github.ref }}
         tags: true
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: bump-and-tag
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.1.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions
+        with:
+          tag_name: v${{ needs.bump-and-tag.outputs.new_ver }}
+          release_name: Release v${{ needs.bump-and-tag.outputs.new_ver }}
+          draft: false
+          prerelease: false
