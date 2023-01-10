@@ -45,7 +45,7 @@ jobs:
     steps:
     # Post deploy to slack
     - name: Auth with GCP
-      uses: 'google-github-actions/auth@v0.8.0'
+      uses: 'google-github-actions/auth@v1'
       with:
         workload_identity_provider: ${{ inputs.workload_identity_provider }}
         service_account: ${{ inputs.service_account }}
@@ -66,9 +66,9 @@ jobs:
     - name: "Set PR data as output variables"
       id: pr_data
       run: |
-        echo ::set-output name=pr_title::${{fromJson(steps.get_pr_info.outputs.data)[0].title}}
-        echo ::set-output name=pr_url::${{fromJson(steps.get_pr_info.outputs.data)[0].html_url}}
-        echo ::set-output name=author::${{fromJson(steps.get_pr_info.outputs.data)[0].user.login}}
+        echo "{pr_title}=${{fromJson(steps.get_pr_info.outputs.data)[0].title}}" >> $GITHUB_OUTPUT
+        echo "{pr_url}=${{fromJson(steps.get_pr_info.outputs.data)[0].html_url}}" >> $GITHUB_OUTPUT
+        echo "{author}=${{fromJson(steps.get_pr_info.outputs.data)[0].user.login}}" >> $GITHUB_OUTPUT
     - name: Post to slack channel
       uses: slackapi/slack-github-action@v1.21.0
       with:
