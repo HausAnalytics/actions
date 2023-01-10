@@ -69,9 +69,9 @@ jobs:
     - name: "Set PR data as output variables"
       id: pr_data
       run: |
-        echo "{pr_title}=${{fromJson(steps.get_pr_info.outputs.data)[0].title}}" >> $GITHUB_OUTPUT
-        echo "{pr_url}=${{fromJson(steps.get_pr_info.outputs.data)[0].html_url}}" >> $GITHUB_OUTPUT
-        echo "{author}=${{fromJson(steps.get_pr_info.outputs.data)[0].user.login}}" >> $GITHUB_OUTPUT
+        echo "{pr_title}={${{fromJson(steps.get_pr_info.outputs.data)[0].title}}}" >> $GITHUB_OUTPUT
+        echo "{pr_url}={${{fromJson(steps.get_pr_info.outputs.data)[0].html_url}}}" >> $GITHUB_OUTPUT
+        echo "{author}={${{fromJson(steps.get_pr_info.outputs.data)[0].user.login}}}" >> $GITHUB_OUTPUT
     - name: Post to slack channel
       uses: slackapi/slack-github-action@v1.21.0
       with:
