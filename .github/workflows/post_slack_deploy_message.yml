@@ -69,13 +69,13 @@ jobs:
     - name: "Set PR data as output variables"
       id: pr_data
       run: |
-        echo "{pr_title}={${{fromJson(steps.get_pr_info.outputs.data)[0].title}}}" >> $GITHUB_OUTPUT
-        echo "{pr_url}={${{fromJson(steps.get_pr_info.outputs.data)[0].html_url}}}" >> $GITHUB_OUTPUT
-        echo "{author}={${{fromJson(steps.get_pr_info.outputs.data)[0].user.login}}}" >> $GITHUB_OUTPUT
+        echo "pr_title=${{fromJson(steps.get_pr_info.outputs.data)[0].title}}" >> $GITHUB_ENV
+        echo "pr_url=${{fromJson(steps.get_pr_info.outputs.data)[0].html_url}}" >> $GITHUB_ENV
+        echo "author=${{fromJson(steps.get_pr_info.outputs.data)[0].user.login}}" >> $GITHUB_ENV
     - name: Post to slack channel
-      uses: slackapi/slack-github-action@v1.21.0
+      uses: slackapi/slack-github-action@v1.24.0
       with:
         channel-id: "${{ inputs.channel-id }}"
-        slack-message: "${{ inputs.additional-slack-message}} \n ${{ inputs.deploy-job-status == 'success' && ':rocket:' || ':sad-cowboy:' }} ${{inputs.environment-name}} ${{ github.event.repository.name }} deploy *${{ inputs.deploy-job-status }}* for ${{ steps.pr_data.outputs.author }}'s changes: `${{ steps.pr_data.outputs.pr_title }}` at sha ${{ inputs.sha }}\n${{steps.pr_data.outputs.pr_url}}"
+        slack-message: "${{ inputs.additional-slack-message}} \n ${{ inputs.deploy-job-status == 'success' && ':rocket:' || ':sad-cowboy:' }} ${{inputs.environment-name}} ${{ github.event.repository.name }} deploy *${{ inputs.deploy-job-status }}* for ${{ env.author }}'s changes: `${{ env.pr_title }}` at sha ${{ inputs.sha }}\n${{ env.pr_url }}"
       env:
         SLACK_BOT_TOKEN: "${{ steps.secrets.outputs.deploybot_token }}"
