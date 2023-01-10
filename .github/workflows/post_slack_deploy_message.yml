@@ -27,6 +27,9 @@ on:
       deploybot_token_secret_name:
         required: true
         type: string
+      repo:
+        required: true
+        type: string
       sha:
         required: false
         type: string
