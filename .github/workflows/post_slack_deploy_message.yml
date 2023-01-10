@@ -76,6 +76,6 @@ jobs:
       uses: slackapi/slack-github-action@v1.23.0
       with:
         channel-id: "${{ inputs.channel-id }}"
-        slack-message: "${{ inputs.additional-slack-message}} \n ${{ inputs.deploy-job-status == 'success' && ':rocket:' || ':sad-cowboy:' }} ${{inputs.environment-name}} ${{ github.event.repository.name }} deploy *${{ inputs.deploy-job-status }}* for ${{ env.author }}'s changes: `${{ env.pr_title }}` at sha ${{ inputs.sha }}\n${{ env.pr_url }}"
+        slack-message: "${{ inputs.additional-slack-message}} \n ${{ inputs.deploy-job-status == 'success' && ':rocket:' || ':sad-cowboy:' }} ${{inputs.environment-name}} ${{ github.event.repository.name }} ${{ github.event.repository.name == 'cypress' && 'e2e test' || 'deploy' }} *${{ inputs.deploy-job-status }}* for ${{ env.author }}'s changes: `${{ env.pr_title }}` at sha ${{ inputs.sha }}\n${{ env.pr_url }}"
       env:
         SLACK_BOT_TOKEN: "${{ steps.secrets.outputs.deploybot_token }}"
