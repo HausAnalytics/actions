@@ -60,7 +60,7 @@ jobs:
     - uses: octokit/request-action@v2.x
       id: get_pr_info
       with:
-        route: "GET $GITHUB_ACTION_REPOSITORY/${{ inputs.sha }}/pulls"
+        route: "GET /repos/HausAnalytics/${{ inputs.repo }}/commits/${{ inputs.sha }}/pulls"
       env:
         GITHUB_TOKEN: '${{ steps.secrets.outputs.github_token }}'
     - name: "Set PR data as output variables"
