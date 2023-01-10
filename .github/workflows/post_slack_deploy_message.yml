@@ -55,8 +55,8 @@ jobs:
       with:
         # using gcp API projects' secret
         secrets: |-
-          github_token: ${{ inputs.github_token_secret_name }}
-          deploybot_token: ${{ inputs.deploybot_token_secret_name }}
+          github_token:${{ inputs.github_token_secret_name }}
+          deploybot_token:${{ inputs.deploybot_token_secret_name }}
     - uses: octokit/request-action@v2.x
       id: get_pr_info
       with:
